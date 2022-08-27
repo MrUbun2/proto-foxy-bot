@@ -1,7 +1,7 @@
 #! /usr/bin/env python3.9
 from discord.ext import commands
 from discord import Option
-import discord, asyncio, sys, os
+import subprocess, discord, asyncio, sys, os
 
 TIMES = [30,20,15,10,3,2,1,0]
 RESTART = False
@@ -88,7 +88,7 @@ async def on_ready():
 
 @bot.command(description="Help!")
 async def help(ctx):
-    await ctx.respond(f"Hi there, this is a simple bot that has (currently) a few moderation commands and some other fun stuff.\nCommands:\n/help: shows this page\n/ping: shows the bot\'s latency\n/kick: kicks a user\n/ban: bans a user", ephemeral=True)
+    await ctx.respond(f"Hi there, this is a simple bot that has (currently) a few moderation commands and some other fun stuff.\nCommands:\n/help: shows this page\n/ping: shows the bot\'s latency\n/tictactoe: tic tac toe\n/kick: kicks a user\n/ban: bans a user", ephemeral=True)
 
 @bot.command(description="Sends the bot's latency.")
 async def ping(ctx):
@@ -144,6 +144,13 @@ async def restart(ctx):
         if i!=0: await asyncio.sleep(TIMES[k]-TIMES[k+1])
     print("--- RESTART COMPLETE ---")
     await bot.close()
+
+@bot.command(description="Git pull command")
+@commands.is_owner()
+async def gitpull(ctx):
+    p=subprocess.Popen(['git','pull'], stdout=subprocess.PIPE)
+    o=p.stdout.read().decode('ascii')
+    await ctx.respond(o)
 
 if __name__ == "__main__":
     bot.run(os.getenv("TOKEN"))
